@@ -1,4 +1,6 @@
-# Personal Finance Tool
+# Income Planner
+
+**Live app → https://jiarui-zh.github.io/Income_Planner/**
 
 A private, browser-based personal finance dashboard built with React 19, TypeScript, Vite, and Tailwind CSS v4.
 
