@@ -1,0 +1,93 @@
+@import "tailwindcss";
+
+* { box-sizing: border-box; }
+
+body {
+  background-color: #070c1b;
+  color: #f8fafc;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  margin: 0;
+  -webkit-font-smoothing: antialiased;
+}
+
+#root { display: flex; min-height: 100vh; }
+
+::-webkit-scrollbar { width: 5px; height: 5px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #2d4f7c; }
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
+
+input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.5); }
+
+/* ── Light mode ────────────────────────────────────────────────────────────── */
+
+.light {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+.light body,
+.light #root {
+  background-color: #f1f5f9;
+  color: #0f172a;
+}
+
+/* Main page backgrounds */
+.light .bg-\[\#070c1b\]  { background-color: #f1f5f9 !important; }
+.light .bg-\[\#060a16\]  { background-color: #f1f5f9 !important; }
+
+/* Card backgrounds */
+.light .bg-\[\#0d1526\]  { background-color: #ffffff !important; }
+.light .bg-\[\#0d1e38\]  { background-color: #ffffff !important; }
+.light .bg-\[\#0a1020\]  { background-color: #ffffff !important; }
+
+/* Secondary card / input backgrounds */
+.light .bg-\[\#1a2744\]  { background-color: #f0f4f8 !important; }
+.light .bg-\[\#111c33\]  { background-color: #f0f4f8 !important; }
+.light .bg-\[\#131e35\]  { background-color: #f0f4f8 !important; }
+.light .bg-\[\#1e2d45\]  { background-color: #e8eef6 !important; }
+
+/* Hover / active backgrounds */
+.light .bg-\[\#243355\]  { background-color: #dde5f0 !important; }
+
+/* Borders */
+.light .border-\[\#1e2d45\] { border-color: #e2e8f0 !important; }
+.light .border-\[\#2a3d5a\] { border-color: #cbd5e1 !important; }
+.light .border-\[\#1a2744\] { border-color: #e2e8f0 !important; }
+.light .divide-\[\#1e2d45\] > * + * { border-color: #e2e8f0 !important; }
+
+/* Hover state overrides */
+.light .hover\:bg-\[\#1a2744\]:hover { background-color: #e8eef6 !important; }
+.light .hover\:bg-\[\#243355\]:hover { background-color: #dde5f0 !important; }
+.light .hover\:border-\[\#2a3d5a\]:hover { border-color: #94a3b8 !important; }
+
+/* Text colors */
+.light .text-white  { color: #0f172a !important; }
+.light .text-slate-300 { color: #334155 !important; }
+
+/* white/opacity used for hover overlays — lighten instead */
+.light .hover\:bg-white\/10:hover { background-color: rgba(0,0,0,0.06) !important; }
+.light .bg-white\/5  { background-color: rgba(0,0,0,0.03) !important; }
+.light .bg-white\/10 { background-color: rgba(0,0,0,0.05) !important; }
+
+/* Sidebar active link highlight — keep subtle */
+.light .bg-emerald-500\/10 { background-color: #d1fae5 !important; }
+
+/* Inputs / selects / textareas — ensure readable in light mode */
+.light input,
+.light select,
+.light textarea {
+  color-scheme: light;
+}
+
+/* Date picker indicator — back to normal in light mode */
+.light input[type="date"]::-webkit-calendar-picker-indicator {
+  filter: none;
+}
+
+/* Scrollbar */
+.light ::-webkit-scrollbar-thumb { background: #cbd5e1; }
+.light ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
