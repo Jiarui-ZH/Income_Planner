@@ -23,22 +23,19 @@ export default function Modal({ title, onClose, children, size = 'md' }: ModalPr
   }, [onClose]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4"
-      onClick={onClose}
-    >
-      <div className="absolute inset-0 bg-black/70 backdrop-blur-sm" />
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/40" />
       <div
-        className={`relative bg-[#0d1526] border border-[#1e2d45] rounded-2xl shadow-2xl w-full ${SIZE_CLASSES[size]} max-h-[90vh] flex flex-col`}
+        className={`relative bg-[#0d1526] border border-[#1e2d45] shadow-xl w-full ${SIZE_CLASSES[size]} max-h-[90vh] flex flex-col`}
         onClick={e => e.stopPropagation()}
       >
         <div className="flex items-center justify-between px-6 py-4 border-b border-[#1e2d45] shrink-0">
-          <h2 className="text-white font-semibold text-base">{title}</h2>
+          <h2 className="text-white font-semibold text-sm tracking-tight">{title}</h2>
           <button
             onClick={onClose}
-            className="p-1.5 text-slate-400 hover:text-white hover:bg-[#1a2744] rounded-lg transition-colors"
+            className="p-1.5 text-slate-400 hover:text-white hover:bg-[#1a2744] transition-colors"
           >
-            <X size={17} />
+            <X size={16} />
           </button>
         </div>
         <div className="p-6 overflow-y-auto flex-1">{children}</div>

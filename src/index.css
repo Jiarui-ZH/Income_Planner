@@ -1,7 +1,12 @@
 @import "tailwindcss";
 
-* { box-sizing: border-box; }
+/* ── Reset ───────────────────────────────────────────────────────────────── */
+*, *::before, *::after {
+  box-sizing: border-box;
+  border-radius: 0 !important;
+}
 
+/* ── Base (dark fallback — overridden by .light below) ───────────────────── */
 body {
   background-color: #070c1b;
   color: #f8fafc;
@@ -14,80 +19,87 @@ body {
 
 ::-webkit-scrollbar { width: 5px; height: 5px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: #1e3a5f; border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: #2d4f7c; }
+::-webkit-scrollbar-thumb { background: #cbd5e1; }
+::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
 
 input[type="number"]::-webkit-inner-spin-button,
 input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; }
 
-input[type="date"]::-webkit-calendar-picker-indicator { filter: invert(1) opacity(0.5); }
-
-/* ── Light mode ────────────────────────────────────────────────────────────── */
-
-.light {
-  background-color: #f1f5f9;
-  color: #0f172a;
-}
-
+/* ── Light mode (always active) ──────────────────────────────────────────── */
 .light body,
 .light #root {
-  background-color: #f1f5f9;
-  color: #0f172a;
+  background-color: #f0f2f7;
+  color: #111827;
 }
 
-/* Main page backgrounds */
-.light .bg-\[\#070c1b\]  { background-color: #f1f5f9 !important; }
-.light .bg-\[\#060a16\]  { background-color: #f1f5f9 !important; }
+/* Page backgrounds */
+.light .bg-\[\#070c1b\] { background-color: #f0f2f7 !important; }
+.light .bg-\[\#060a16\] { background-color: #f0f2f7 !important; }
 
-/* Card backgrounds */
-.light .bg-\[\#0d1526\]  { background-color: #ffffff !important; }
-.light .bg-\[\#0d1e38\]  { background-color: #ffffff !important; }
-.light .bg-\[\#0a1020\]  { background-color: #ffffff !important; }
+/* Cards */
+.light .bg-\[\#0d1526\] { background-color: #ffffff !important; }
+.light .bg-\[\#0d1e38\] { background-color: #ffffff !important; }
+.light .bg-\[\#0a1020\] { background-color: #ffffff !important; }
 
-/* Secondary card / input backgrounds */
-.light .bg-\[\#1a2744\]  { background-color: #f0f4f8 !important; }
-.light .bg-\[\#111c33\]  { background-color: #f0f4f8 !important; }
-.light .bg-\[\#131e35\]  { background-color: #f0f4f8 !important; }
-.light .bg-\[\#1e2d45\]  { background-color: #e8eef6 !important; }
+/* Secondary / input backgrounds */
+.light .bg-\[\#1a2744\] { background-color: #eaecf4 !important; }
+.light .bg-\[\#111c33\] { background-color: #eaecf4 !important; }
+.light .bg-\[\#131e35\] { background-color: #eaecf4 !important; }
+.light .bg-\[\#1e2d45\] { background-color: #e2e6f0 !important; }
+.light .bg-\[\#243355\] { background-color: #d8dcea !important; }
 
-/* Hover / active backgrounds */
-.light .bg-\[\#243355\]  { background-color: #dde5f0 !important; }
+/* Hover */
+.light .hover\:bg-\[\#1a2744\]:hover  { background-color: #e4e7f2 !important; }
+.light .hover\:bg-\[\#243355\]:hover  { background-color: #d8dcea !important; }
+.light .hover\:bg-\[\#111c33\]:hover  { background-color: #e4e7f2 !important; }
 
 /* Borders */
-.light .border-\[\#1e2d45\] { border-color: #e2e8f0 !important; }
-.light .border-\[\#2a3d5a\] { border-color: #cbd5e1 !important; }
-.light .border-\[\#1a2744\] { border-color: #e2e8f0 !important; }
-.light .divide-\[\#1e2d45\] > * + * { border-color: #e2e8f0 !important; }
+.light .border-\[\#1e2d45\]            { border-color: #dde2ee !important; }
+.light .border-\[\#2a3d5a\]            { border-color: #c8d0e4 !important; }
+.light .border-\[\#1a2744\]            { border-color: #dde2ee !important; }
+.light .divide-\[\#1e2d45\] > * + *   { border-color: #dde2ee !important; }
+.light .hover\:border-\[\#2a3d5a\]:hover { border-color: #a0aec0 !important; }
 
-/* Hover state overrides */
-.light .hover\:bg-\[\#1a2744\]:hover { background-color: #e8eef6 !important; }
-.light .hover\:bg-\[\#243355\]:hover { background-color: #dde5f0 !important; }
-.light .hover\:border-\[\#2a3d5a\]:hover { border-color: #94a3b8 !important; }
+/* Text */
+.light .text-white          { color: #111827 !important; }
+.light .text-slate-100      { color: #1f2937 !important; }
+.light .text-slate-200      { color: #374151 !important; }
+.light .text-slate-300      { color: #374151 !important; }
+.light .text-slate-400      { color: #6b7280 !important; }
+.light .text-slate-500      { color: #9ca3af !important; }
 
-/* Text colors */
-.light .text-white  { color: #0f172a !important; }
-.light .text-slate-300 { color: #334155 !important; }
+/* Overlays */
+.light .bg-white\/5         { background-color: rgba(0,0,0,0.02) !important; }
+.light .bg-white\/10        { background-color: rgba(0,0,0,0.04) !important; }
+.light .hover\:bg-white\/10:hover { background-color: rgba(0,0,0,0.05) !important; }
 
-/* white/opacity used for hover overlays — lighten instead */
-.light .hover\:bg-white\/10:hover { background-color: rgba(0,0,0,0.06) !important; }
-.light .bg-white\/5  { background-color: rgba(0,0,0,0.03) !important; }
-.light .bg-white\/10 { background-color: rgba(0,0,0,0.05) !important; }
+/* Emerald → blue (non-financial accent) */
+.light .bg-emerald-500\/10          { background-color: #eff6ff !important; }
+.light .border-emerald-500\/20      { border-color: #bfdbfe !important; }
+.light .text-emerald-400            { color: #2563eb !important; }
+.light .text-emerald-300            { color: #1d4ed8 !important; }
+.light .hover\:text-emerald-300:hover { color: #1d4ed8 !important; }
+.light .hover\:text-emerald-400:hover { color: #2563eb !important; }
+.light .bg-emerald-500              { background-color: #1e2535 !important; }
 
-/* Sidebar active link highlight — keep subtle */
-.light .bg-emerald-500\/10 { background-color: #d1fae5 !important; }
+/* Keep financial green/red as-is (income = green, expense = red) */
 
-/* Inputs / selects / textareas — ensure readable in light mode */
-.light input,
-.light select,
-.light textarea {
-  color-scheme: light;
-}
+/* Inputs */
+.light input, .light select, .light textarea { color-scheme: light; }
+.light input[type="date"]::-webkit-calendar-picker-indicator { filter: none; }
 
-/* Date picker indicator — back to normal in light mode */
-.light input[type="date"]::-webkit-calendar-picker-indicator {
-  filter: none;
-}
+/* ── Sidebar: always stays dark ──────────────────────────────────────────── */
+[data-dark] { color-scheme: dark; }
 
-/* Scrollbar */
-.light ::-webkit-scrollbar-thumb { background: #cbd5e1; }
-.light ::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+.light [data-dark]                              { background-color: #1e2535 !important; border-color: #2d3748 !important; }
+.light [data-dark] .text-white                  { color: #f1f5f9 !important; }
+.light [data-dark] .hover\:text-white:hover     { color: #ffffff !important; }
+.light [data-dark] .text-slate-400              { color: #94a3b8 !important; }
+.light [data-dark] .text-slate-500              { color: #64748b !important; }
+.light [data-dark] .border-\[\#1a2744\]         { border-color: #2d3748 !important; }
+.light [data-dark] .bg-\[\#1a2744\]             { background-color: #273347 !important; }
+.light [data-dark] .hover\:bg-\[\#111c33\]:hover { background-color: #273347 !important; }
+.light [data-dark] .bg-emerald-500              { background-color: #2563eb !important; }
+.light [data-dark] .text-emerald-400            { color: #60a5fa !important; }
+.light [data-dark] .border-emerald-500\/20      { border-color: #3b82f6 !important; }
+.light [data-dark] .bg-emerald-500\/10          { background-color: rgba(59,130,246,0.15) !important; }

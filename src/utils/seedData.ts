@@ -17,7 +17,7 @@ export const SEED_STATE: AppState = {
   settings: {
     currency: 'AUD', currencySymbol: '$',
     payCycle: 'fortnightly', payDay: 1,
-    theme: 'dark', monthlyNetIncome: 0,
+    theme: 'light', monthlyNetIncome: 0,
     annualGrossIncome: 0, superRate: 11.5,
   },
   keywordOverrides: {},

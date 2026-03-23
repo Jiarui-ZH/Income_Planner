@@ -18,12 +18,9 @@ import Login from './pages/auth/Login';
 import Signup from './pages/auth/Signup';
 
 function ThemeApplier() {
-  const { settings } = useAppStore();
   useEffect(() => {
-    const html = document.documentElement;
-    if (settings.theme === 'light') html.classList.add('light');
-    else html.classList.remove('light');
-  }, [settings.theme]);
+    document.documentElement.classList.add('light');
+  }, []);
   return null;
 }
 
