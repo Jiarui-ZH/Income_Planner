@@ -68,7 +68,7 @@ export default function Signup({ onSwitch }: Props) {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4">
+    <div className="relative h-screen flex items-center justify-center p-4 overflow-hidden">
       <AuthBackground />
 
       <div className="relative z-10 w-full max-w-sm" style={{ background: 'rgba(255,255,255,0.97)', boxShadow: '0 25px 60px rgba(0,0,0,0.5)' }}>

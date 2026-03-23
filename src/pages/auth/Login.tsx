@@ -81,7 +81,7 @@ export default function Login({ onSwitch }: Props) {
   };
 
   return (
-    <div className="relative min-h-screen flex items-center justify-center p-4">
+    <div className="relative h-screen flex items-center justify-center p-4 overflow-hidden">
       <AuthBackground />
 
       {/* Card */}
