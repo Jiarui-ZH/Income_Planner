@@ -1,4 +1,4 @@
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type {
   AppState, Transaction, Category, Account, BudgetBucket,
   SavingsGoal, RecurringItem, ImportBatch, AppSettings,
@@ -6,37 +6,87 @@ import type {
 } from '../types';
 import { SEED_STATE } from '../utils/seedData';
 import { nanoid } from '../utils/helpers';
+import { supabase } from '../lib/supabase';
 
-const STORAGE_KEY = 'ultimate_finance_v3';
+const TABLE = 'user_data';
 
-function loadState(): AppState {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const parsed = JSON.parse(raw) as AppState;
-      // Merge any new default categories that might have been added
-      return parsed;
-    }
-  } catch { /* ignore */ }
-  return SEED_STATE;
+// ── Supabase helpers ──────────────────────────────────────────────────────────
+
+async function fetchState(): Promise<AppState | null> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return null;
+
+  const { data, error } = await supabase
+    .from(TABLE)
+    .select('data')
+    .eq('user_id', user.id)
+    .maybeSingle();
+
+  if (error) { console.error('fetchState:', error.message); return null; }
+  return (data?.data as AppState) ?? null;
 }
 
-function saveState(state: AppState): void {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch { /* ignore */ }
+async function persistState(state: AppState): Promise<void> {
+  const { data: { user } } = await supabase.auth.getUser();
+  if (!user) return;
+
+  const { error } = await supabase.from(TABLE).upsert({
+    user_id: user.id,
+    data: state,
+    updated_at: new Date().toISOString(),
+  });
+  if (error) console.error('persistState:', error.message);
 }
+
+// ── Store ─────────────────────────────────────────────────────────────────────
 
 export function useStore() {
-  const [state, setState] = useState<AppState>(loadState);
+  const [state, setState] = useState<AppState>(SEED_STATE);
+  const [loading, setLoading] = useState(true);
+  const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Load data from Supabase when auth session is ready
+  useEffect(() => {
+    let cancelled = false;
+
+    const init = async () => {
+      const remote = await fetchState();
+      if (!cancelled) {
+        if (remote) setState(remote);
+        setLoading(false);
+      }
+    };
+
+    init();
+
+    // Re-load when the user signs in
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      if (session?.user) {
+        setLoading(true);
+        init();
+      } else {
+        setState(SEED_STATE);
+        setLoading(false);
+      }
+    });
+
+    return () => {
+      cancelled = true;
+      subscription.unsubscribe();
+    };
+  }, []);
+
+  // Debounced write-through: apply update locally then save to Supabase
   const update = useCallback((updater: (s: AppState) => AppState) => {
     setState(prev => {
       const next = updater(prev);
-      saveState(next);
+      if (saveTimer.current) clearTimeout(saveTimer.current);
+      saveTimer.current = setTimeout(() => persistState(next), 600);
       return next;
     });
   }, []);
 
-  // ── Transactions ───────────────────────────────────────────────────────────
+  // ── Transactions ─────────────────────────────────────────────────────────────
 
   const addTransaction = useCallback((tx: Omit<Transaction, 'id'>) => {
     const newTx: Transaction = { ...tx, id: 'tx_' + nanoid() };
@@ -83,7 +133,7 @@ export function useStore() {
     }));
   }, [update]);
 
-  // ── Categories ─────────────────────────────────────────────────────────────
+  // ── Categories ───────────────────────────────────────────────────────────────
 
   const addCategory = useCallback((cat: Omit<Category, 'id'>) => {
     const newCat: Category = { ...cat, id: 'cat_' + nanoid() };
@@ -107,7 +157,7 @@ export function useStore() {
     }));
   }, [update]);
 
-  // ── Accounts ───────────────────────────────────────────────────────────────
+  // ── Accounts ─────────────────────────────────────────────────────────────────
 
   const addAccount = useCallback((acc: Omit<Account, 'id'>) => {
     const newAcc: Account = { ...acc, id: 'acc_' + nanoid() };
@@ -125,7 +175,7 @@ export function useStore() {
     update(s => ({ ...s, accounts: s.accounts.filter(a => a.id !== id) }));
   }, [update]);
 
-  // ── Budget Buckets ─────────────────────────────────────────────────────────
+  // ── Budget Buckets ───────────────────────────────────────────────────────────
 
   const addBudgetBucket = useCallback((bucket: Omit<BudgetBucket, 'id'>) => {
     const newBucket: BudgetBucket = { ...bucket, id: 'bucket_' + nanoid() };
@@ -143,13 +193,13 @@ export function useStore() {
     update(s => ({ ...s, budgetBuckets: s.budgetBuckets.filter(b => b.id !== id) }));
   }, [update]);
 
-  // ── Income Allocation ──────────────────────────────────────────────────────
+  // ── Income Allocation ────────────────────────────────────────────────────────
 
   const updateIncomeAllocation = useCallback((allocation: IncomeAllocation) => {
     update(s => ({ ...s, incomeAllocation: allocation }));
   }, [update]);
 
-  // ── Savings Goals ──────────────────────────────────────────────────────────
+  // ── Savings Goals ────────────────────────────────────────────────────────────
 
   const addSavingsGoal = useCallback((goal: Omit<SavingsGoal, 'id' | 'createdAt'>) => {
     const newGoal: SavingsGoal = { ...goal, id: 'goal_' + nanoid(), createdAt: new Date().toISOString() };
@@ -167,7 +217,7 @@ export function useStore() {
     update(s => ({ ...s, savingsGoals: s.savingsGoals.filter(g => g.id !== id) }));
   }, [update]);
 
-  // ── Recurring Items ────────────────────────────────────────────────────────
+  // ── Recurring Items ──────────────────────────────────────────────────────────
 
   const addRecurringItem = useCallback((item: Omit<RecurringItem, 'id'>) => {
     const newItem: RecurringItem = { ...item, id: 'rec_' + nanoid() };
@@ -185,7 +235,7 @@ export function useStore() {
     update(s => ({ ...s, recurringItems: s.recurringItems.filter(r => r.id !== id) }));
   }, [update]);
 
-  // ── Import Batches ─────────────────────────────────────────────────────────
+  // ── Import Batches ───────────────────────────────────────────────────────────
 
   const addImportBatch = useCallback((batch: ImportBatch) => {
     update(s => ({ ...s, importBatches: [batch, ...s.importBatches] }));
@@ -199,13 +249,13 @@ export function useStore() {
     }));
   }, [update]);
 
-  // ── Settings ───────────────────────────────────────────────────────────────
+  // ── Settings ─────────────────────────────────────────────────────────────────
 
   const updateSettings = useCallback((changes: Partial<AppSettings>) => {
     update(s => ({ ...s, settings: { ...s.settings, ...changes } }));
   }, [update]);
 
-  // ── Keyword Overrides ──────────────────────────────────────────────────────
+  // ── Keyword Overrides ────────────────────────────────────────────────────────
 
   const addKeywordOverride = useCallback((keyword: string, categoryId: string) => {
     update(s => ({
@@ -214,13 +264,12 @@ export function useStore() {
     }));
   }, [update]);
 
-  // ── Data Management ────────────────────────────────────────────────────────
+  // ── Data Management ──────────────────────────────────────────────────────────
 
-  const clearAllData = useCallback(() => {
-    localStorage.removeItem(STORAGE_KEY);
-    const fresh = SEED_STATE;
+  const clearAllData = useCallback(async () => {
+    const fresh = { ...SEED_STATE };
     setState(fresh);
-    saveState(fresh);
+    await persistState(fresh);
   }, []);
 
   const exportData = useCallback((): string => {
@@ -230,11 +279,12 @@ export function useStore() {
   const importData = useCallback((json: string) => {
     const parsed = JSON.parse(json) as AppState;
     setState(parsed);
-    saveState(parsed);
+    persistState(parsed);
   }, []);
 
   return {
     ...state,
+    loading,
     addTransaction, addTransactions, updateTransaction, deleteTransaction,
     bulkCategorize, bulkDelete, splitTransaction,
     addCategory, updateCategory, deleteCategory,

@@ -1,12 +1,13 @@
 import { useState, useRef, useMemo } from 'react';
 import {
   Save, Download, Upload, Trash2, Lock, Plus, X, Check,
-  ChevronDown, AlertTriangle, Database, Edit2,
+  ChevronDown, AlertTriangle, Database, Edit2, LogOut,
 } from 'lucide-react';
 import { useAppStore } from '../store/StoreContext';
 import Modal from '../components/Modal';
 import { fmtCurrency } from '../utils/helpers';
 import { DEFAULT_CATEGORIES } from '../utils/categories';
+import { supabase } from '../lib/supabase';
 import type { Category, Account, AccountType } from '../types';
 
 // ── Australian tax helpers ─────────────────────────────────────────────────────
@@ -1324,9 +1325,18 @@ export default function Settings() {
 
   return (
     <div className="p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold text-white">Settings</h1>
-        <p className="text-slate-400 text-sm mt-0.5">Manage your preferences, categories, accounts, and data.</p>
+      <div className="flex items-start justify-between">
+        <div>
+          <h1 className="text-2xl font-bold text-white">Settings</h1>
+          <p className="text-slate-400 text-sm mt-0.5">Manage your preferences, categories, accounts, and data.</p>
+        </div>
+        <button
+          onClick={() => supabase.auth.signOut()}
+          className="flex items-center gap-2 px-4 py-2 border border-[#1e2d45] text-slate-400 hover:text-white hover:border-[#2a3d5a] text-sm transition-colors"
+        >
+          <LogOut size={15} />
+          Sign out
+        </button>
       </div>
 
       <div className="flex flex-col lg:flex-row gap-6">
